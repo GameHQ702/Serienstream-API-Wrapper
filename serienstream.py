@@ -7,6 +7,7 @@ class Login():
     def __init__(self):
         pass
 
+    #is important to get session token
     def __new__(self, email, password):
         self.endpoint = "https://serienstream.sx/api/v1/"
         self.token = "9bmkkkvloi4o10pnel886l1xj6ztycualnmofbkrsfzsmc26lrujoesptp8aqw" #Token is from the s.to Android App
@@ -31,12 +32,14 @@ class s():
         self.endpoint = "https://serienstream.sx/api/v1/"
         self.token = "9bmkkkvloi4o10pnel886l1xj6ztycualnmofbkrsfzsmc26lrujoesptp8aqw" #Token is from the s.to Android App
 
+    #decompile the series url to id
     def UrlToID(self, url):
         response = requests.get(url).text
         regex = re.compile("series-id=\"(\\d+)\"")
         id = regex.findall(response)[0]
         return id
 
+    #WIP Search
     def Search(self, search):
         search = search.lower().replace(" ", "-")
         return s.UrlToID(self, f"https://serienstream.sx/serie/stream/{search}")
@@ -57,19 +60,21 @@ class s():
 
         return json.loads(response.text)
 
+    #get Stats from the Stats Page
     def Stats(self):
         response = requests.get(f"{self.endpoint}statistics/get?key={self.token}")
         return json.loads(response.text)
 
 
 class Watchlist():
-
+    #require session token
     def __init__(self, session):
             print("Attention: You get the token from Login")
             self.token = "9bmkkkvloi4o10pnel886l1xj6ztycualnmofbkrsfzsmc26lrujoesptp8aqw" #Token is from the s.to Android App
             self.SSTOSESSION = session
             self.endpoint = "https://serienstream.sx/api/v1/"
 
+    #list whole watchlist
     def List(self, extended):
             data = {
                 "SSTOSESSION": self.SSTOSESSION
@@ -78,6 +83,7 @@ class Watchlist():
             response = requests.get(f"{self.endpoint}account/watchlist/list?key={self.token}&extended={extended}", cookies=data)
             return json.loads(response.text)
 
+    #add a serie to watchlist
     def Add(self, id):
             data = {
                 "SSTOSESSION": self.SSTOSESSION
@@ -86,6 +92,7 @@ class Watchlist():
             response = requests.get(f"{self.endpoint}account/watchlist/add?key={self.token}&id={id}", cookies=data)
             return json.loads(response.text)
 
+    #remove a serie from watchlist
     def Remove(self, id):
             data = {
                 "SSTOSESSION": self.SSTOSESSION
@@ -95,13 +102,14 @@ class Watchlist():
             return json.loads(response.text)
 
 class Subscription():
-
+    #require session token
     def __init__(self, session):
             print("Attention: You get the token from Login")
             self.token = "9bmkkkvloi4o10pnel886l1xj6ztycualnmofbkrsfzsmc26lrujoesptp8aqw" #Token is from the s.to Android App
             self.SSTOSESSION = session
             self.endpoint = "https://serienstream.sx/api/v1/"
 
+    #list whole subscriptions
     def List(self, extended):
         data = {
             "SSTOSESSION": self.SSTOSESSION
@@ -110,6 +118,7 @@ class Subscription():
         response = requests.get(f"{self.endpoint}account/subscription/list?key={self.token}&extended={extended}", cookies=data)
         return json.loads(response.text)
 
+    #add a serie to subscription
     def Add(self, id):
         data = {
                 "SSTOSESSION": self.SSTOSESSION
@@ -118,6 +127,7 @@ class Subscription():
         response = requests.get(f"{self.endpoint}account/subscription/add?key={self.token}&id={id}", cookies=data)
         return json.loads(response.text)
 
+    #remove a serie from subscription
     def Remove(self, id):
         data = {
             "SSTOSESSION": self.SSTOSESSION
